@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: ea16a3ef6c1eb344eb2b2fdb7c264f82
+timeCreated: 1484357651
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Unocide
+  fontNames:
+  - Unocide
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
