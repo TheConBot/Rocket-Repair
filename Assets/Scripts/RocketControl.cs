@@ -67,7 +67,7 @@ public class RocketControl : MonoBehaviour
             Camera.main.gameObject.GetComponent<CameraFollow>().setCameraPosition();
             audioFollow.UpdatePosition();
         }
-        if (Input.GetKeyDown(KeyCode.Space) && !launchRocket_initial && !UIManager.S.shop_panel.activeSelf)
+        if (Input.GetButtonDown("Fire1") && !launchRocket_initial && !UIManager.S.shop_panel.activeSelf)
         {
             launchRocket_initial = true;
             StartCoroutine(UIManager.S.RocketLaunch());
@@ -94,10 +94,11 @@ public class RocketControl : MonoBehaviour
             bgDepthMat.mainTextureOffset = new Vector2(bgDepthMat.mainTextureOffset.x + (-Time.deltaTime * (rb.velocity.x * 0.001f)), bgDepthMat.mainTextureOffset.y + (-Time.deltaTime * (rb.velocity.y * 0.001f)));
         }
 
-        var mouse = Input.mousePosition;
-        var screenPoint = Camera.main.WorldToScreenPoint(transform.localPosition);
-        var offset = new Vector2(mouse.x - screenPoint.x, mouse.y - screenPoint.y);
-        var angle = (Mathf.Atan2(offset.y, offset.x) * Mathf.Rad2Deg) - 90;
+        //var mouse = Input.mousePosition;
+        //var screenPoint = Camera.main.WorldToScreenPoint(transform.localPosition);
+        //var offset = new Vector2(mouse.x - screenPoint.x, mouse.y - screenPoint.y);
+        //var angle = (Mathf.Atan2(offset.y, offset.x) * Mathf.Rad2Deg) - 90;
+        var angle = transform.eulerAngles.z + (-175 * Time.deltaTime * Input.GetAxis("Horizontal")); 
         transform.rotation = Quaternion.Euler(0, 0, angle);
     }
 
@@ -160,6 +161,7 @@ public class RocketControl : MonoBehaviour
                 {
                     rb.isKinematic = true;
                     rb.velocity = Vector2.zero;
+                    rb.angularVelocity = 0;
                     rocketTrail.Stop();
                     launchRocket_thrust = false;
                     StopCoroutine("ThrusterTime");
@@ -252,6 +254,7 @@ public class RocketControl : MonoBehaviour
         bitSpawn.DespawnBits();
         bitSpawn.SpawnBits();
         rocket.transform.position = rocket_spawn;
+        rocket.transform.rotation = Quaternion.identity;
         UIManager.S.roundStart_panel.alpha = 1;
         UIManager.S.roundStart_panel.interactable = true;
         launchRocket_initial = false;

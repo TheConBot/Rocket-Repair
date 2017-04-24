@@ -10,7 +10,35 @@ public class MainMenuUI : MonoBehaviour {
     public CanvasGroup transition_image;
     public AudioSource button_audio;
 
-	public void PlayButton()
+    private void Awake()
+    {
+        Cursor.visible = false;
+    }
+
+    private void Update()
+    {
+        if (Input.GetButtonDown("Fire3"))
+        {
+            Application.Quit();
+        }
+        if (Input.GetButtonDown("Fire1"))
+        {
+            if (!panel1.activeSelf && !panel2.activeSelf)
+            {
+                PlayButton();
+            }
+            else if (panel1.activeSelf)
+            {
+                NextButton();
+            }
+            else
+            {
+                LaunchButton();
+            }
+        }
+    }
+
+    public void PlayButton()
     {
         panel1.SetActive(true);
         button_audio.Play();

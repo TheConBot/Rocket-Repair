@@ -30,13 +30,14 @@ public class UIManager : MonoBehaviour
     private RocketControl rocketControl;
     private readonly float[] fillAmounts = new float[10] { 0, 0.11f, 0.23f, 0.34f, 0.45f, 0.57f, 0.68f, 0.8f, 0.91f, 1.0f };
     private readonly int[] upgrade_costs = new int[9] { 22, 69, 100, 222, 420, 655, 910, 1680, 2222};
-    private string upgrade1_des = "Repair your Rocket's engines so it has more launch power! Cost: ";
-    private string upgrade2_des = "Repair your Rocket's fuel tank so it can launch longer! Cost: ";
-    private string upgrade3_des = "Repair your Rocket's launch gauge so it's bar moves slower! Cost: ";
+    private const string upgrade1_des = "Repair your Rocket's engines so it has more launch power! Cost: ";
+    private const string upgrade2_des = "Repair your Rocket's fuel tank so it can launch longer! Cost: ";
+    private const string upgrade3_des = "Repair your Rocket's launch gauge so it's bar moves slower! Cost: ";
     private int selectedButton;
     private int upgrade1_amount = 0;
     private int upgrade2_amount = 0;
     private int upgrade3_amount = 0;
+    private bool buttonCooldown;
 
     private void Awake()
     {
@@ -53,6 +54,7 @@ public class UIManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
         }
         transition_image.alpha = 1;
+        Cursor.visible = false;
     }
 
     private void Start()
@@ -64,6 +66,35 @@ public class UIManager : MonoBehaviour
 
     private void Update()
     {
+        if (Input.GetButtonDown("Fire3"))
+        {
+            Application.Quit();
+        }
+        if (Input.GetButtonDown("Fire2") && roundStart_panel.alpha == 1)
+        {
+            if (!shop_panel.activeSelf)
+            {
+                ShopButton();
+            }
+            else
+            {
+                CloseButton();
+            }
+        }
+
+        if (shop_panel.activeSelf)
+        {
+            if (Input.GetAxisRaw("Horizontal") != 0 && !buttonCooldown)
+            {
+                UpgradeButton(selectedButton + (int)Input.GetAxisRaw("Horizontal"));
+                StartCoroutine(ButtonCooldown());
+            }
+            else if (Input.GetButtonDown("Fire1"))
+            {
+                BuyButton();
+            }
+        }
+
         if (rocketControl.launchRocket_initial)
         {
             height_text.text = rocketControl.maxHeightAchieved.ToString() + "m";
@@ -113,6 +144,10 @@ public class UIManager : MonoBehaviour
 
     public void UpgradeButton(int i)
     {
+        if(i < 0 || i > 2)
+        {
+            return;
+        }
         selectedButton = i;
         foreach (Button button in upgrade_buttons)
         {
@@ -188,5 +223,12 @@ public class UIManager : MonoBehaviour
         button_audio.Play();
         height_text.text = "0m";
         shop_panel.SetActive(false);
+    }
+
+    private IEnumerator ButtonCooldown()
+    {
+        buttonCooldown = true;
+        yield return new WaitForSeconds(0.15f);
+        buttonCooldown = false;
     }
 }
